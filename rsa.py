@@ -95,22 +95,20 @@ def generate_keypair(p, q, keysize):
 
     return ((e, n), (d, n))
 
-def encrypt(msg_plaintext, package):
-    e, n = package
+def encrypt(msg_plaintext, key, n):
     string = ''
 
     for c in msg_plaintext:
-        string = string + chr(pow(ord(c), e, n))
+        string = string + chr(pow(ord(c), int(key), int(n)))
     
     return string
 
 
-def decrypt(msg_ciphertext, package):
-    d, n = package
+def decrypt(msg_ciphertext, key, n):
 
     string = ''
     for c in msg_ciphertext:
-        string = string + chr(pow(ord(c), d, n))
+        string = string + chr(pow(ord(c), int(key), int(n)))
 
     return string
 
@@ -123,14 +121,15 @@ if __name__ == "__main__":
     print("Generating public/private keypair...")
     public, private = generate_keypair(
         p, q, 2**bit_length)  # 8 is the keysize (bit-length) value.
+    
     print("Public Key: ", public)
     print("Private Key: ", private)
-    
+
     msg = input("Write msg: ")
-    encrypted_msg = encrypt(msg, public)
+    encrypted_msg = encrypt(msg, public[0], public[1])
 
     print("Encrypted msg: ")
     print(encrypted_msg)
 
     print("Decrypted msg: ")
-    print(decrypt(encrypted_msg, private))
+    print(decrypt(encrypted_msg, private[0], private[1]))

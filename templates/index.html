@@ -46,7 +46,7 @@
       </div>
       <div class="col-lg-2">
         <label>&nbsp;</label><br/>
-        <button id="execute" class="btn btn-primary">Encrypt / Decrypt</button>
+        <button id="execute" class="btn btn-primary" onclick="encryptdecrypt()">Encrypt / Decrypt</button>
       </div>
       <div class="col-lg-5">
         <label for="encrypted">Encrypted:</label><br/>
@@ -57,13 +57,39 @@
 </div>
 
 <script type=text/javascript>
-    function generate()
+  function generate()
+  {
+    $.get('/generate/8', function(data)
     {
-        $.get('/generate/8', function(data)
-        {
-            eval(data);
-        });
+      eval(data);
+    });
+  }
+
+  function encryptdecrypt()
+  {
+    if($("#decrypted").val().length > 0)
+    {
+      msg = $("#decrypted").val()
+      pubkey = $("#pubkey").val().split(', ')
+      
+      $.get(`/encrypt/${msg}/${pubkey[0]}/${pubkey[1]}`, function(data)
+      {
+        $("#decrypted").val('')
+        $('#encrypted').val(data);
+      });
     }
+    else
+    {
+      crypted = $("#encrypted").val()
+      privkey = $("#privkey").val().split(', ')
+      
+      $.get(`/decrypt/${crypted}/${privkey[0]}/${privkey[1]}`, function(data)
+      {
+        $('#decrypted').val(data);
+        $("#encrypted").val('')
+      });
+    }
+  }
 </script>
 
 </div>
