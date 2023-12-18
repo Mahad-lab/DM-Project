@@ -17,15 +17,15 @@ def index():
 
 @app.route('/generate/<size>')
 def gen(size):
-  public, private = rsa.generate_keypair(p, q, int(size))
-  return f"$('#pubkey').val(`{public[0]}, {public[1]}`); $('#privkey').val(`{private[0]}, {private[1]}`);"
+  public, private, n = rsa.generate_keypair(p, q, int(size))
+  return f"{public},{private},{n}"
 
-@app.route('/encrypt/<msg>/<key>/<n>')
-def encrypt(msg, key, n):
+@app.route('/encrypt/<key>/<n>/<msg>')
+def encrypt(key, n, msg):
   return f"{rsa.encrypt(msg, key, n)}"
 
-@app.route('/decrypt/<crypted>/<key>/<n>')
-def decrypt(crypted, key, n):
+@app.route('/decrypt/<key>/<n>/<crypted>')
+def decrypt(key, n, crypted):
   return f"{rsa.decrypt(crypted, key, n)}"
 
 

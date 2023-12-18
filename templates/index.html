@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Online RSA Key Generator</title>
+  <title>RSA - DM Project</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -16,7 +16,11 @@
     <div class="panel-heading"><h2>RSA - Keys</h2></div>
     <div class="panel-body">
       <div class="col-lg-2">
-        <br><br><br><br><br><br>
+        <br/><br/><br/>
+        <label class="form-label" for="nvalue" style="margin-left: 30%">N: (p*q)</label>
+        <input type="tel" id="nvalue" class="form-control" />
+        <br/>
+        <br/>
         <button class="btn btn-primary" onclick="generate()">Generate New Keys</button>
       </div>
       <div class="col-lg-10">
@@ -24,12 +28,12 @@
           <div class="col-lg-6">
             <label for="privkey">Private Key</label><br/>
             <small>
-              <textarea id="privkey" rows="15" style="width:100%"></textarea>
+              <textarea id="privkey" rows="10" style="width:100%"></textarea>
             </small>
           </div>
           <div class="col-lg-6">
             <label for="pubkey">Public Key</label><br/>
-            <small><textarea id="pubkey" rows="15" style="width:100%" ></textarea></small>
+            <small><textarea id="pubkey" rows="10" style="width:100%" ></textarea></small>
           </div>
         </div>
       </div>
@@ -38,11 +42,11 @@
 </div>
 <div class="row">
   <div class="panel panel-default">
-    <div class="panel-heading"><h3>RSA - Encrypt & Decrypt</h3></div>
+    <div class="panel-heading"><h3>RSA - Encrypt / Decrypt</h3></div>
     <div class="panel-body">
       <div class="col-lg-5">
         <label for="decrypted">Text to encrypt:</label><br/>
-        <textarea id="decrypted" name="decrypted" style="width: 100%" rows="4">Hello</textarea>
+        <textarea id="decrypted" name="decrypted" style="width: 100%" rows="8">Hello</textarea>
       </div>
       <div class="col-lg-2">
         <label>&nbsp;</label><br/>
@@ -50,7 +54,7 @@
       </div>
       <div class="col-lg-5">
         <label for="encrypted">Encrypted:</label><br/>
-        <textarea id="encrypted" name="encrypted" style="width: 100%" rows="4"></textarea>
+        <textarea id="encrypted" name="encrypted" style="width: 100%" rows="8"></textarea>
       </div>
     </div>
   </div>
@@ -61,7 +65,11 @@
   {
     $.get('/generate/8', function(data)
     {
-      eval(data);
+      items = data.split(',')
+      $("#pubkey").val(items[0])
+      $("#privkey").val(items[1])
+      $("#nvalue").val(items[2])
+      alert(`Generated and inserted the following to their respective fields:\n\nPublic Key: ${items[0]}\nPrivate Key: ${items[1]}\nN: ${items[2]}`)
     });
   }
 
@@ -70,9 +78,16 @@
     if($("#decrypted").val().length > 0)
     {
       msg = $("#decrypted").val()
-      pubkey = $("#pubkey").val().split(', ')
+      pubkey = $("#pubkey").val()
+      n = $("#nvalue").val()
+
+      if(pubkey.length < 1 || n.length < 1 || msg.length < 1)
+      {
+        alert("Required: Public Key, N and Message")
+        return
+      }
       
-      $.get(`/encrypt/${msg}/${pubkey[0]}/${pubkey[1]}`, function(data)
+      $.get(`/encrypt/${pubkey}/${n}/${encodeURIComponent(msg)}`, function(data)
       {
         $("#decrypted").val('')
         $('#encrypted').val(data);
@@ -81,9 +96,16 @@
     else
     {
       crypted = $("#encrypted").val()
-      privkey = $("#privkey").val().split(', ')
+      privkey = $("#privkey").val()
+      n = $("#nvalue").val()
+
+      if(privkey.length < 1 || n.length < 1 || crypted.length < 1)
+      {
+        alert("Required: Private Key, N and Cipher")
+        return
+      }
       
-      $.get(`/decrypt/${crypted}/${privkey[0]}/${privkey[1]}`, function(data)
+      $.get(`/decrypt/${privkey}/${n}/${encodeURIComponent(crypted)}`, function(data)
       {
         $('#decrypted').val(data);
         $("#encrypted").val('')

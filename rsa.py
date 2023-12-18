@@ -73,7 +73,7 @@ def generate_keypair(p, q, keysize):
         if q_values:
             q = random.choice(q_values)
             break
-    print(p, q)
+        
     n = p * q
     phi = (p - 1) * (q - 1)
 
@@ -93,7 +93,7 @@ def generate_keypair(p, q, keysize):
     #public key (e,n)
     #private key (d,n)
 
-    return ((e, n), (d, n))
+    return (e, d, n)
 
 def encrypt(msg_plaintext, key, n):
     string = ''
@@ -119,17 +119,17 @@ if __name__ == "__main__":
     bit_length = int(input("Enter bit_length: "))
     print("Running RSA...")
     print("Generating public/private keypair...")
-    public, private = generate_keypair(
+    public, private, n = generate_keypair(
         p, q, 2**bit_length)  # 8 is the keysize (bit-length) value.
     
     print("Public Key: ", public)
     print("Private Key: ", private)
 
     msg = input("Write msg: ")
-    encrypted_msg = encrypt(msg, public[0], public[1])
+    encrypted_msg = encrypt(msg, public, n)
 
     print("Encrypted msg: ")
     print(encrypted_msg)
 
     print("Decrypted msg: ")
-    print(decrypt(encrypted_msg, private[0], private[1]))
+    print(decrypt(encrypted_msg, private, n))
