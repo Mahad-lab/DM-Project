@@ -9,18 +9,27 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 <body>
-
+<style>
+  .btn {
+    background-color: hotpink;
+  }
+</style>
 <div class="container">
   <div class="row">
   <div class="panel panel-default">
     <div class="panel-heading"><h2>RSA - Keys</h2></div>
     <div class="panel-body">
       <div class="col-lg-2">
-        <br/><br/><br/>
+        <br/>
+        <button style="margin-left: 30px" class="btn btn-primary" onclick="save()">Save Keys</button>
+        <br/><br/>
+        <button style="margin-left: 30px" class="btn btn-primary" onclick="load()">Load Keys</button>
+        <br/>
+        <br/>
         <label class="form-label" for="nvalue" style="margin-left: 30%">N: (p*q)</label>
         <input type="tel" id="nvalue" class="form-control" />
         <br/>
-        <br/>
+
         <button class="btn btn-primary" onclick="generate()">Generate New Keys</button>
       </div>
       <div class="col-lg-10">
@@ -50,7 +59,7 @@
       </div>
       <div class="col-lg-2">
         <label>&nbsp;</label><br/>
-        <button id="execute" class="btn btn-primary" onclick="encryptdecrypt()">Encrypt / Decrypt</button>
+        <button id="execute" class="btn btn-primary" style="margin-top: 40px" onclick="encryptdecrypt()">Encrypt / Decrypt</button>
       </div>
       <div class="col-lg-5">
         <label for="encrypted">Encrypted:</label><br/>
@@ -71,6 +80,35 @@
       $("#nvalue").val(items[2])
       alert(`Generated and inserted the following to their respective fields:\n\nPublic Key: ${items[0]}\nPrivate Key: ${items[1]}\nN: ${items[2]}`)
     });
+  }
+
+  function save() {
+    localStorage.setItem("nval", $("#nvalue").val());
+    localStorage.setItem("pubkey", $("#pubkey").val());
+    localStorage.setItem("privkey", $("#privkey").val());
+
+    alert(`Saved!`)
+  }
+
+  function isEmpty(item) {
+    if (item == null || item.length < 1) return true
+
+      return false
+  }
+  
+  function load() {
+    $("#nvalue").val(localStorage.getItem("nval"));
+    $("#pubkey").val(localStorage.getItem("pubkey"));
+    $("#privkey").val(localStorage.getItem("privkey"));
+
+    if(isEmpty($("#pubkey").val()) || isEmpty($("#pubkey").val()) || isEmpty($("#nvalue").val()))
+    {
+      alert("No keys saved!")
+    }
+    else
+    {
+      alert(`Loaded!`)
+    }
   }
 
   function encryptdecrypt()
