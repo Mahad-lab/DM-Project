@@ -99,7 +99,7 @@ def encrypt(msg_plaintext, key, n):
     string = ''
 
     for c in msg_plaintext:
-        string = string + chr(pow(ord(c), int(key), int(n)))
+        string = string + str(pow(ord(c), int(key), int(n))) + ' '
     
     return string
 
@@ -107,8 +107,12 @@ def encrypt(msg_plaintext, key, n):
 def decrypt(msg_ciphertext, key, n):
 
     string = ''
-    for c in msg_ciphertext:
-        string = string + chr(pow(ord(c), int(key), int(n)))
+    cipherindex = msg_ciphertext.split(' ')
+    for c in cipherindex:
+        if len(c) < 1: 
+            continue
+
+        string = string + chr(pow(int(c), int(key), int(n)))
 
     return string
 
